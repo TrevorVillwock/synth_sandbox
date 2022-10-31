@@ -9,14 +9,15 @@
 
 let volSlider;
 let pitchSlider;
+let rhythmMenu;
 
 window.onload = function () {
     volSlider = document.getElementById("volumeSlider");
-    pitchSlider = document.getElementById("pitchSlider")
-    console.log(volSlider);
+    pitchSlider = document.getElementById("pitchSlider");
+    rhythmMenu = document.getElementById("notes");
 }
 
-let vol = new Tone.Volume(-25).toDestination()
+let vol = new Tone.Volume(-25).toDestination();
 
 //const testSynth = new Tone.AMOscillator(100, "sawtooth", "sine", 0.1).connect(vol);
 
@@ -85,4 +86,15 @@ async function toggleRandomPitch() {
         console.log("bpm: " + Tone.Transport.bpm.value);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
+}
+
+function setRhythm(){
+    let note = rhythmMenu.value;
+
+    Tone.Transport.stop();
+    Tone.Transport.scheduleRepeat((time) => {
+        testSynth.start(time).stop(time + 0.05);
+    }, note);
+    Tone.Transport.start();
+    console.log("set rhythmic value");
 }

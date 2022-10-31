@@ -11,6 +11,7 @@
 <div>
   <input type="checkbox" id="randomSpeedButton" onclick="toggleRandomSpeed()">Random Speed</button>
 </div>
+
 <div>
     <input type="checkbox" id="randomPitchButton" onclick="toggleRandomPitch()">Random Pitch</button>
   </div>
@@ -23,6 +24,17 @@
   <input type="range" min="100" max="1000" value="100" id="pitchSlider"
          oninput="setPitch()">
 </div>
+<h>Rhythm</h>
+<div>
+    <label for="notes">Choose a rhythmic value</label>
+    <select name="notes" id="notes" onchange="setRhythm()">
+        <option value="4n">Quarter</option>
+        <option value="8n">Eighth</option>
+        <option value="8t">Eighth Triplet</option>
+        <option value="16n">Sixteenth</option>
+    </select>
+</div>
+
 <div id="log"></div>
   </body>
 </html>
