@@ -1,19 +1,21 @@
 let volSlider;
 let pitchSlider;
+let cutoffSlider;
 let rhythmMenu;
 
 window.onload = function () {
     volSlider = document.getElementById("volumeSlider");
     pitchSlider = document.getElementById("pitchSlider");
+    cutoffSlider = document.getElementById("cutoffSlider");
     rhythmMenu = document.getElementById("notes");
 }
 
 let vol = new Tone.Volume(-25).toDestination();
-//let filter = new Tone.Filter(1500, "lowpass").connect(vol);
+let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
 //const testSynth = new Tone.AMOscillator(100, "sawtooth", "sine", 0.1).connect(vol);
 
-const testSynth = new Tone.Oscillator(200, "sawtooth16").connect(vol);
+const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
 
 // Boolean variable indicating whether randomness is turned on or off
 let randomSpeed = 0;
@@ -86,10 +88,16 @@ async function toggleRandomPitch() {
 function setRhythm() {
     let note = rhythmMenu.value;
     Tone.Transport.clear(clock)
-    //Tone.Transport.stop();
     clock = Tone.Transport.scheduleRepeat((time) => {
         testSynth.start(time).stop(time + 0.05);
     }, note);
-    //Tone.Transport.start();
     console.log("set rhythmic value");
+}
+
+function setFilterCutoff() {
+    // Map a cutoff slider value of 1-1000 to approximately the human
+    // hearing range of 20-20000 Hertz using logarithmic scaling
+
+    filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
+    console.log(filter.frequency.value);
 }
