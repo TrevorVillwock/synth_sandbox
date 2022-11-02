@@ -1,40 +1,43 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Synth Sandbox</title>
+        <meta name="description" content="A simple synthesizer">
+    </head>
+    <body>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.53/Tone.js'></script>
+        <script src='./synth_sandbox.js'></script>
+        <h>Synth Sandbox</h>
+        <div>
+            <button onclick="start()">start</button>
+            <button id="stopButton" onclick="stop()">stop</button>
+        </div>
+        <div>
+            <input type="checkbox" id="randomSpeedButton" onclick="toggleRandomSpeed()">Random Speed</button>
+        </div>
+        <div>
+            <input type="checkbox" id="randomPitchButton" onclick="toggleRandomPitch()">Random Pitch</button>
+        </div>
+        <h>Volume</h>
+        <div>
+            <input type="range" min="0" max="200" value="100" id="volumeSlider" oninput="setVolume()">
+        </div>
+        <h>Pitch</h>
+        <div>
+            <input type="range" min="100" max="1000" value="100" id="pitchSlider"
+                oninput="setPitch()">
+        </div>
+        <h>Rhythm</h>
+        <div>
+            <label for="notes">Choose a rhythmic value</label>
+            <select name="notes" id="notes" onchange="setRhythm()">
+                <option value="4n">Quarter</option>
+                <option value="8n">Eighth</option>
+                <option value="8t">Eighth Triplet</option>
+                <option value="16n">Sixteenth</option>
+            </select>
+        </div>
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.53/Tone.js'></script>
-<script src='./synth_sandbox.js'></script>
-<h>
-  Synth Sandbox
-</h>
-<div>
-  <button onclick="start()">start</button>
-  <button id="stopButton" onclick="stop()">stop</button>
-</div>
-<div>
-  <input type="checkbox" id="randomSpeedButton" onclick="toggleRandomSpeed()">Random Speed</button>
-</div>
-
-<div>
-    <input type="checkbox" id="randomPitchButton" onclick="toggleRandomPitch()">Random Pitch</button>
-  </div>
-<h>Volume</h>
-<div>
-  <input type="range" min="0" max="200" value="100" id="volumeSlider" oninput="setVolume()">
-</div>
-<h>Pitch</h>
-<div>
-  <input type="range" min="100" max="1000" value="100" id="pitchSlider"
-         oninput="setPitch()">
-</div>
-<h>Rhythm</h>
-<div>
-    <label for="notes">Choose a rhythmic value</label>
-    <select name="notes" id="notes" onchange="setRhythm()">
-        <option value="4n">Quarter</option>
-        <option value="8n">Eighth</option>
-        <option value="8t">Eighth Triplet</option>
-        <option value="16n">Sixteenth</option>
-    </select>
-</div>
-
-<div id="log"></div>
-  </body>
+        <div id="log"></div>
+    </body>
 </html>

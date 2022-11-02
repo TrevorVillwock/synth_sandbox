@@ -30,7 +30,7 @@ let randomPitch = 0;
 // Set default value for BPM (beats per minute). 60 BPM is one beat per second.
 Tone.Transport.bpm.value = 60;
 
-Tone.Transport.scheduleRepeat((time) => {
+let clock = Tone.Transport.scheduleRepeat((time) => {
     testSynth.start(time).stop(time + 0.05);
 }, "8n");
 
@@ -88,11 +88,11 @@ async function toggleRandomPitch() {
     }
 }
 
-function setRhythm(){
+function setRhythm() {
     let note = rhythmMenu.value;
-
-    Tone.Transport.stop();
-    Tone.Transport.scheduleRepeat((time) => {
+    Tone.Transport.clear(clock)
+    //Tone.Transport.stop();
+    clock = Tone.Transport.scheduleRepeat((time) => {
         testSynth.start(time).stop(time + 0.05);
     }, note);
     Tone.Transport.start();
