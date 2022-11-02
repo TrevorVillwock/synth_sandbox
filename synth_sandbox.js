@@ -1,12 +1,3 @@
-// Adapted from https://codepen.io/dirkk0/pen/yLMaMGa
-// This code creates a metronome with a "random speed" feature
-// that will make it either speed up or slow down by a random
-// amount on each click.
-
-// let player = new Tone.Player(
-//     "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1506195/keyboard-key.mp3"
-// ).toDestination();
-
 let volSlider;
 let pitchSlider;
 let rhythmMenu;
@@ -18,6 +9,7 @@ window.onload = function () {
 }
 
 let vol = new Tone.Volume(-25).toDestination();
+//let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
 //const testSynth = new Tone.AMOscillator(100, "sawtooth", "sine", 0.1).connect(vol);
 
@@ -58,7 +50,7 @@ function setVolume() {
     if (volSlider.value != 0) {
       vol.volume.value = -1 * (100 - 13 * Math.log2(volSlider.value));
       
-      console.log("volume: " + vol.volume.value);
+      //console.log("volume: " + vol.volume.value);
     }
 }
 
@@ -67,12 +59,12 @@ function setPitch() {
 }
 
 async function toggleRandomSpeed() {
-    console.log("toggling random speed");
+    //console.log("toggling random speed");
     randomSpeed = !randomSpeed;
 
     while (randomSpeed) {
         Tone.Transport.bpm.value = 150 + Math.random() * 1000; 
-        console.log("bpm: " + Tone.Transport.bpm.value);
+        //console.log("bpm: " + Tone.Transport.bpm.value);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
 }
@@ -81,9 +73,12 @@ async function toggleRandomPitch() {
     console.log("toggling random pitch");
     randomPitch = !randomPitch;
 
+    let notes = [100, 200, 300, 400, 500, 600, 700, 800];
+    
     while (randomPitch) {
-        testSynth.frequency.value = 100 + Math.random() * 900;
-        console.log("bpm: " + Tone.Transport.bpm.value);
+
+        testSynth.frequency.value = notes[Math.floor(Math.random() * notes.length)];
+        //console.log("bpm: " + Tone.Transport.bpm.value);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
 }
@@ -95,6 +90,6 @@ function setRhythm() {
     clock = Tone.Transport.scheduleRepeat((time) => {
         testSynth.start(time).stop(time + 0.05);
     }, note);
-    Tone.Transport.start();
+    //Tone.Transport.start();
     console.log("set rhythmic value");
 }
