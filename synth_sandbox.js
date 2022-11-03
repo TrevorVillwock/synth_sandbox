@@ -20,13 +20,15 @@ const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
 // Boolean variable indicating whether randomness is turned on or off
 let randomSpeed = 0;
 let randomPitch = 0;
+let basePitch = 0;
 
 // Set default value for BPM (beats per minute). 60 BPM is one beat per second.
 Tone.Transport.bpm.value = 60;
 
 let clock = Tone.Transport.scheduleRepeat((time) => {
+    console.log("frequency: " + testSynth.frequency.value)
     testSynth.start(time).stop(time + 0.05);
-}, "8n");
+}, "4n");
 
 // Run when start button is clicked
 function start() {
@@ -57,7 +59,10 @@ function setVolume() {
 }
 
 function setPitch() {
-    testSynth.frequency.value = pitchSlider.value
+    console.log("setting pitch");
+    console.log("slider value: " + pitchSlider.value);
+    testSynth.frequency.value = pitchSlider.value;
+    if (pitchSlider.value) basePitch = pitchSlider.value;
 }
 
 async function toggleRandomSpeed() {
@@ -79,8 +84,9 @@ async function toggleRandomPitch() {
     
     while (randomPitch) {
 
-        testSynth.frequency.value = notes[Math.floor(Math.random() * notes.length)];
-        //console.log("bpm: " + Tone.Transport.bpm.value);
+        testSynth.frequency.value = parseInt(basePitch) + parseInt(notes[Math.floor(Math.random() * notes.length)]);
+        console.log("pitchslider: " + pitchSlider.value);
+        console.log("basePitch: " + basePitch);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
 }
@@ -95,8 +101,8 @@ function setRhythm() {
 }
 
 function setFilterCutoff() {
-    // Map a cutoff slider value of 1-1000 to approximately the human
-    // hearing range of 20-20000 Hertz using logarithmic scaling
+    // Map a cutoff slider value of 1-1000 to a range of 150 to 
+    // 20000 Hertz using exponential scaling.
 
     filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
     console.log(filter.frequency.value);
