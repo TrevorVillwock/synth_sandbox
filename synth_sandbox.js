@@ -13,14 +13,13 @@ window.onload = function () {
 let vol = new Tone.Volume(-25).toDestination();
 let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
-//const testSynth = new Tone.AMOscillator(100, "sawtooth", "sine", 0.1).connect(vol);
+const testSynth = new Tone.AMOscillator(100, "sawtooth116", "sine", 0.1).connect(filter);
 
-const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
+//const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
 
 // Boolean variable indicating whether randomness is turned on or off
 let randomSpeed = 0;
 let randomPitch = 0;
-//let basePitch = 0;
 
 // Set default value for BPM (beats per minute). 60 BPM is one beat per second.
 Tone.Transport.bpm.value = 60;
@@ -70,7 +69,7 @@ async function toggleRandomSpeed() {
     randomSpeed = !randomSpeed;
 
     while (randomSpeed) {
-        Tone.Transport.bpm.value = 150 + Math.random() * 1000; 
+        Tone.Transport.bpm.value = 40 + Math.random() * 360; 
         //console.log("bpm: " + Tone.Transport.bpm.value);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
@@ -86,7 +85,6 @@ async function toggleRandomPitch() {
 
         testSynth.frequency.value = parseInt(pitchSlider.value) + parseInt(notes[Math.floor(Math.random() * notes.length)]);
         console.log("pitchslider: " + pitchSlider.value);
-        console.log("basePitch: " + basePitch);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
 }
