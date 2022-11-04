@@ -7,13 +7,14 @@ window.onload = function () {
     volSlider = document.getElementById("volumeSlider");
     pitchSlider = document.getElementById("pitchSlider");
     cutoffSlider = document.getElementById("cutoffSlider");
+    amSlider = document.getElementById("amSlider");
     rhythmMenu = document.getElementById("notes");
 }
 
 let vol = new Tone.Volume(-25).toDestination();
 let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
-const testSynth = new Tone.AMOscillator(100, "sawtooth116", "sine", 0.1).connect(filter);
+const testSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1).connect(filter);
 
 //const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
 
@@ -104,4 +105,9 @@ function setFilterCutoff() {
 
     filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
     console.log(filter.frequency.value);
+}
+
+function setAMFreq() {
+    testSynth.set({harmonicity: amSlider.value});
+    console.log("set AM frequency");
 }
