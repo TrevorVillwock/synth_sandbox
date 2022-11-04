@@ -1,0 +1,1 @@
+After npm is installed and http-server has been installed with `npm install -g http-server`, run this small project wih `http-server` from the command line.
