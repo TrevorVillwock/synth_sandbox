@@ -8,6 +8,9 @@ window.onload = function () {
     pitchSlider = document.getElementById("pitchSlider");
     cutoffSlider = document.getElementById("cutoffSlider");
     amSlider = document.getElementById("amSlider");
+    lfoRateSlider = document.getElementById("lfoRateSlider");
+    lfoRangelider = document.getElementById("lfoRangeSlider");
+    lfoOffsetSlider = document.getElementById("lfoOffsetSlider");
     rhythmMenu = document.getElementById("notes");
 }
 
@@ -85,6 +88,7 @@ async function toggleRandomPitch() {
     console.log("toggling random pitch");
     randomPitch = !randomPitch;
 
+    // The first 3 octaves of the harmonic series, consisting of 8 pitches
     let notes = [100, 200, 300, 400, 500, 600, 700, 800];
     
     while (randomPitch) {
@@ -119,13 +123,14 @@ function setAMFreq() {
 }
 
 function setLfoRate(){
-
+    lfo1.set({frequency: Math.log2(lfoRateSlider.value)})
 }
 
 function setLfoRange(){
-    
+    lfoRange = lfoRangelider.value;
+    lfo1.set({max: lfoRangelider.value + lfo1.min})
 }
 
 function setLfoOffset(){
-    
+    lfo1.set({min: lfoOffsetSlider.value})  
 }
