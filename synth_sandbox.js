@@ -15,6 +15,10 @@ let vol = new Tone.Volume(-25).toDestination();
 let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
 const testSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1).connect(filter);
+const lfo1 = new Tone.LFO("8n", 0, 1000);
+let lfoRange = 100;
+lfo1.connect(testSynth.frequency);
+lfo1.start();
 
 //const testSynth = new Tone.Oscillator(200, "sawtooth128").connect(filter);
 
@@ -59,10 +63,11 @@ function setVolume() {
 }
 
 function setPitch() {
-    console.log("setting pitch");
+    console.log("setting pitch with LFO");
     console.log("slider value: " + pitchSlider.value);
-    testSynth.frequency.value = pitchSlider.value;
-    if (pitchSlider.value) basePitch = pitchSlider.value;
+    let lfoTop = parseInt(pitchSlider.value) + lfoRange;
+    let lfoBottom = parseInt(pitchSlider.value) - lfoRange;
+    lfo1.set({max: lfoTop, min: lfoBottom});
 }
 
 async function toggleRandomSpeed() {
@@ -83,8 +88,9 @@ async function toggleRandomPitch() {
     let notes = [100, 200, 300, 400, 500, 600, 700, 800];
     
     while (randomPitch) {
-
-        testSynth.frequency.value = parseInt(pitchSlider.value) + parseInt(notes[Math.floor(Math.random() * notes.length)]);
+        let lfoTop = parseInt(pitchSlider.value) + parseInt(notes[Math.floor(Math.random() * notes.length)]) + lfoRange;
+        let lfoBottom = parseInt(pitchSlider.value) + parseInt(notes[Math.floor(Math.random() * notes.length)]) - lfoRange;
+        lfo1.set({min: lfoBottom, max: lfoTop});
         console.log("pitchslider: " + pitchSlider.value);
         await new Promise(r => setTimeout(r, (1000*(60 / Tone.Transport.bpm.value))));
     }
@@ -110,4 +116,16 @@ function setFilterCutoff() {
 function setAMFreq() {
     testSynth.set({harmonicity: amSlider.value});
     console.log("set AM frequency");
+}
+
+function setLfoRate(){
+
+}
+
+function setLfoRange(){
+    
+}
+
+function setLfoOffset(){
+    
 }

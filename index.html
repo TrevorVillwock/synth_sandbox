@@ -35,6 +35,22 @@
         <div>
             <input type="range" min="0.5" max="5" step=0.1 value="1" id="amSlider" oninput="setAMFreq()">
         </div>
+        <h>Low Frequency Oscillator (LFO)</h>
+        <div>
+            <p>Rate</p>
+            <div>
+                <input type="range" min="0.0" max="1000" step=0.1 value="0.0" id="lfoRateSlider" oninput="setLfoRate()">
+            </div>
+            <p>Range</p>
+            <div>
+                <input type="range" min="0.0" max="10000" step=0.1 value="1" id="lfoRangeSlider" oninput="setLfoRange()">
+            </div>
+            <p>Offset</p>
+            <div>
+                <input type="range" min="0.0" max="10000" step=0.1 value="1" id="lfoOffsetSlider" oninput="setLfoOffset()">
+            </div>
+            
+        </div>
         <h>Rhythm</h>
         <div>
             <label for="notes">Choose a rhythmic value</label>
