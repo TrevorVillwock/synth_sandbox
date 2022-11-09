@@ -18,7 +18,7 @@ let vol = new Tone.Volume(-25).toDestination();
 let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
 const testSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1).connect(filter);
-const lfo1 = new Tone.LFO("8n", 0, 1000);
+const lfo1 = new Tone.LFO(1, 0, 100);
 let lfoRange = 100;
 lfo1.connect(testSynth.frequency);
 lfo1.start();
@@ -110,8 +110,9 @@ function setRhythm() {
 }
 
 function setFilterCutoff() {
-    // Map a cutoff slider value of 1-1000 to a range of 150 to 
-    // 20000 Hertz using exponential scaling.
+    // Map a cutoff slider value of 1-14.3 to a range of 150 to 
+    // 20000 Hertz using exponential scaling. 20000 Hz is the highest 
+    // most humans can hear, and 2^14.3 equals approximately 20000.
 
     filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
     console.log(filter.frequency.value);
@@ -124,6 +125,7 @@ function setAMFreq() {
 
 function setLfoRate(){
     lfo1.set({frequency: Math.log2(lfoRateSlider.value)})
+    console.log()
 }
 
 function setLfoRange(){
