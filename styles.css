@@ -1,5 +1,10 @@
-html, body {
+/* Element selector / type selector / tag selector */
+body {
     background-color: rgb(192, 162, 240);
+    margin: auto;
+    max-width: 500px;
+    column-count: 3;
+    zoom: 125%;
 }
 
 .full-height {
@@ -12,5 +17,16 @@ h1 {
 
 h2 {
     color: black;
-    padding-right: 100%;
+}
+
+.meme {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+}
+
+/* class selector */
+.columns {
+    float: left;
+    width: 50%;
 }
