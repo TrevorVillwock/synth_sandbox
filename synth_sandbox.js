@@ -9,7 +9,7 @@ window.onload = function () {
     cutoffSlider = document.getElementById("cutoffSlider");
     amSlider = document.getElementById("amSlider");
     lfoRateSlider = document.getElementById("lfoRateSlider");
-    lfoRangelider = document.getElementById("lfoRangeSlider");
+    lfoRangeSlider = document.getElementById("lfoRangeSlider");
     lfoOffsetSlider = document.getElementById("lfoOffsetSlider");
     rhythmMenu = document.getElementById("notes");
 }
@@ -129,8 +129,10 @@ function setLfoRate(){
 }
 
 function setLfoRange(){
-    lfoRange = lfoRangelider.value;
-    lfo1.set({max: lfoRangelider.value + lfo1.min})
+    lfoRange = lfoRangeSlider.value;
+    lfo1.set({max: lfoRange + lfo1.min})
+    console.log("lfo1 max: " + lfo1.max)
+    console.log("lfo1 min: " + lfo1.min)
 }
 
 function setLfoOffset(){
