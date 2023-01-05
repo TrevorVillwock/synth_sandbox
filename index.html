@@ -8,60 +8,71 @@
         <script src='./synth_sandbox.js'></script>
     </head>
     <body>
-        <img class="meme" src="./annoying_sound.jpg"> </img>
-        <div class="columns">
-            <h1>Synth Sandbox</h1>
-            <div>
-                <button onclick="start()">start</button>
-                <button id="stopButton" onclick="stop()">stop</button>
+        <div class="row">
+            <div class="column">
+                <img class="meme" src="./annoying_sound.jpg"> </img>
             </div>
-            <div >
-                <input class="check-box" type="checkbox" id="randomSpeedButton" onclick="toggleRandomSpeed()">Random Speed</button>
-            </div>
-            <div>
-                <input type="checkbox" id="randomPitchButton" onclick="toggleRandomPitch()">Random Pitch</button>
-            </div>
-            <h2>Volume</h2>
-            <div>
-                <input type="range" min="0" max="200" value="100" id="volumeSlider" oninput="setVolume()">
-            </div>
-            <h2>Pitch</h2>
-            <div>
-                <input type="range" min="100" max="1000" value="100" id="pitchSlider"
-                    oninput="setPitch()">
-            </div>
-            <h2>Low Pass Filter Cutoff</h2>
-            <div>
-                <input type="range" min="1.0" max="14.3" step=0.01 value="14.3" id="cutoffSlider" oninput="setFilterCutoff()">
-            </div>
-            <h2>Amplitude Modulation Frequency</h2>
-            <div>
-                <input type="range" min="0.5" max="5" step=0.1 value="1" id="amSlider" oninput="setAMFreq()">
-            </div>
-            <h2>Low Frequency Oscillator (LFO)</h2>
-            <div>
-                <p>Rate</p>
-                <div>
-                    <input type="range" min="0.0" max="20" step="0.1" value="0.0" id="lfoRateSlider" oninput="setLfoRate()">
+            <div class="column">
+                <h1>Synth Sandbox</h1>
+                <div class="buttons">
+                    <button onclick="start()">start</button>
                 </div>
-                <p>Range</p>
-                <div>
-                    <input type="range" min="0.0" max="100" step="0.1" value="1" id="lfoRangeSlider" oninput="setLfoRange()">
+                <div class="buttons">
+                    <button id="stopButton" onclick="stop()">stop</button>
                 </div>
-                <p>Offset</p>
+                <div >
+                    <input class="check-box" type="checkbox" id="randomSpeedButton" onclick="toggleRandomSpeed()">Random Speed</button>
+                </div>
                 <div>
-                    <input type="range" min="0.0" max="100" step="0.1" value="1" id="lfoOffsetSlider" oninput="setLfoOffset()">
+                    <input type="checkbox" id="randomPitchButton" onclick="toggleRandomPitch()">Random Pitch</button>
+                </div>
+                <h2>Volume</h2>
+                <div class="volume-bar">
+                    <input type="range" min="0" max="200" value="100" id="volumeSlider" oninput="setVolume()">
+                </div>
+                <h2>Pitch</h2>
+                <div>
+                    <input type="range" min="100" max="1000" value="100" id="pitchSlider"
+                        oninput="setPitch()">
                 </div>
             </div>
-            <h2>Rhythm</h2>
-            <div>
-                <label for="notes">Choose a rhythmic value</label>
-                <select name="notes" id="notes" onchange="setRhythm()">
-                    <option value="4n">Quarter</option>
-                    <option value="8n">Eighth</option>
-                    <option value="8t">Eighth Triplet</option>
-                    <option value="16n">Sixteenth</option>
-                </select>
+            <div class="column">
+                <h2>Low Pass Filter Cutoff</h2>
+                <div>
+                    <input type="range" min="1.0" max="14.3" step=0.01 value="14.3" id="cutoffSlider" oninput="setFilterCutoff()">
+                </div>
+                <h2>Amplitude Modulation Frequency</h2>
+                <div>
+                    <input type="range" min="0.5" max="5" step=0.1 value="1" id="amSlider" oninput="setAMFreq()">
+                </div>
+            <div class="column">
+                <h2>Low Frequency Oscillator (LFO)</h2>
+                <div>
+                    <p>Rate</p>
+                    <div>
+                        <input type="range" min="2" max="20" step="0.1" value="0.0" id="lfoRateSlider" oninput="setLfoRate()">
+                    </div>
+                    <p>Range</p>
+                    <div>
+                        <input type="range" min="1.0" max="2.0" step="0.01" value="1.0" id="lfoRangeSlider" oninput="setLfoRange()">
+                    </div>
+                    <p>Offset</p>
+                    <div>
+                        <input type="range" min="0.0" max="100" step="0.1" value="1" id="lfoOffsetSlider" oninput="setLfoOffset()">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h2>Rhythm</h2>
+                <div>
+                    <label for="notes">Choose a rhythmic value</label>
+                    <select name="notes" id="notes" onchange="setRhythm()">
+                        <option value="4n">Quarter</option>
+                        <option value="8n">Eighth</option>
+                        <option value="8t">Eighth Triplet</option>
+                        <option value="16n">Sixteenth</option>
+                    </select>
+                </div>
             </div>
         </div>
     </body>

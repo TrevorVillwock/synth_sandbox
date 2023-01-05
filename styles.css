@@ -3,7 +3,6 @@ body {
     background-color: rgb(192, 162, 240);
     margin: auto;
     max-width: 500px;
-    column-count: 3;
     zoom: 125%;
 }
 
@@ -19,14 +18,22 @@ h2 {
     color: black;
 }
 
+/* class selector which will override the element selector */
 .meme {
     margin: auto;
-    width: 100%;
+    width: 250px;
+    height: 250px;
     padding: 10px;
 }
+ 
+.row {
+    display: flex;
+}
 
-/* class selector */
-.columns {
+.column {
+    flex: 20%;
+}
+
+.buttons {
     float: left;
-    width: 50%;
 }
