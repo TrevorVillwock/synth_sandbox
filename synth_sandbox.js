@@ -42,11 +42,13 @@ let clock = Tone.Transport.scheduleRepeat((time) => {
 // Run when start button is clicked
 function start() {
     Tone.start();
+    Tone.Transport.start();
 }
 
 // Run when the stop button is clicked
 function stop() {
-    Tone.stop();
+    //Tone.stop();
+    Tone.Transport.stop();
 }
 
 function setVolume() {
@@ -150,4 +152,12 @@ function setLfoRange(){
 
 function setLfoOffset(){
     lfo1.set({min: lfoOffsetSlider.value})  
+}
+
+function closeModal() {
+    let modal = document.getElementById("popup");
+    console.log("modal:")
+    console.log(modal)
+    console.log("closing modal");
+    modal.style.display="none";
 }
