@@ -99,12 +99,11 @@ h2 {
     text-align: center;
 }
 
-/*
 .control-slider {
     appearance: none;  /* Override default CSS styles */
-    /* background: #1ea5e9;
+    background: #1ea5e9;
+    height: 5px;
 }
-*/
 
 /* Uncomment this to display a red border around each html element. 
 The asterisk (*) stands for all elements. */
