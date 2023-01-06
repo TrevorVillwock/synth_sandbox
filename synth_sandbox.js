@@ -17,13 +17,14 @@ window.onload = function () {
 // The first 3 octaves and first 8 pitches of the harmonic series starting on approximately G2 (98 Hz), 
 // an octave and a fourth below middle C 
 let notes = [100, 200, 300, 400, 500, 600, 700, 800];
+let noteLength = "+0.5";
 
 let vol = new Tone.Volume(-25).toDestination();
 let filter = new Tone.Filter(1500, "lowpass").connect(vol);
 
 const testSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1).connect(filter);
 const lfo1 = new Tone.LFO(0, 1, 2);
-let lfoRange = 100;
+let lfoRange = 1;
 lfo1.connect(testSynth.frequency);
 lfo1.start();
 
@@ -34,14 +35,16 @@ let randomPitch = 0;
 // Set default value for BPM (beats per minute). 60 BPM is one beat per second.
 Tone.Transport.bpm.value = 60;
 
-let clock = Tone.Transport.scheduleRepeat((time) => {
+let clock = Tone.Transport.scheduleRepeat(() => {
     //console.log("synth frequency: " + testSynth.frequency.value)
-    testSynth.start(time).stop(time + 1);
+    testSynth.start()
+    testSynth.stop(noteLength);
 }, "4n");
+
+console.log(`clock: ${clock}`);
 
 // Run when start button is clicked
 function start() {
-    Tone.start();
     Tone.Transport.start();
 }
 
@@ -70,39 +73,61 @@ function setVolume() {
 function setPitch() {
     //console.log("setting pitch with LFO");
     //console.log("slider value: " + pitchSlider.value);
-    let lfoTop = parseInt(pitchSlider.value) + lfoRange;
-    let lfoBottom = parseInt(pitchSlider.value) - lfoRange;
+    let lfoTop = parseInt(pitchSlider.value) * lfoRange;
+    let lfoBottom = parseInt(pitchSlider.value) / lfoRange;
     lfo1.set({max: lfoTop, min: lfoBottom});
 }
 
 function updateSettings() {
-    Tone.Transport.clear(clock);
+    
+    console.log("cancelling Transport");
+    Tone.Transport.cancel(0);
+    console.log("transport cancelled");
+    console.log("setting new clock");
+
+    let now = Tone.now()
 
     if (randomSpeed && randomPitch) {
-        clock = Tone.Transport.schedule((time) => {
-            let lfoTop = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] + lfoRange;
-            let lfoBottom = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] - lfoRange;
-            lfo1.set({min: lfoBottom, max: lfoTop});
-            testSynth.start(time).stop(time + 0.05);
+        console.log("both");
+        clock = Tone.Transport.scheduleRepeat((time) => {
+            setLfo();
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
-        }, rhythmMenu.value);
+            testSynth.start();
+            testSynth.stop(noteLength);
+            console.log("playing from randomSpeed & randomPitch");
+        }, rhythmMenu.value, now);
     } else if (randomSpeed) {
         clock = Tone.Transport.scheduleRepeat((time) => {
-            testSynth.start(time).stop(time + 0.05);
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
-        }, rhythmMenu.value);
+            testSynth.start();
+            testSynth.stop(noteLength);
+            console.log("playing from randomSpeed");
+        }, rhythmMenu.value, now);
     } else if (randomPitch) {
         clock = Tone.Transport.scheduleRepeat((time) => {
-            let lfoTop = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] + lfoRange;
+            /* let lfoTop = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] + lfoRange;
             let lfoBottom = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] - lfoRange;
-            lfo1.set({min: lfoBottom, max: lfoTop});
-            testSynth.start(time).stop(time + 0.05);
-        }, rhythmMenu.value);
+            lfo1.set({min: lfoBottom, max: lfoTop}); */
+            setLfo();
+            testSynth.start();
+            testSynth.stop(noteLength);
+            console.log("playing from randomPitch");
+        }, rhythmMenu.value, now);
     } else {
         clock = Tone.Transport.scheduleRepeat((time) => {
-            testSynth.start(time).stop(time + 0.05);
-        }, rhythmMenu.value);
+            testSynth.start();
+            testSynth.stop(noteLength);
+            console.log("playing normally");
+        }, rhythmMenu.value, now);
     }
+
+    console.log("new clock set");
+}
+
+function setLfo() {
+    let lfoTop = (parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)]) * lfoRange;
+    let lfoBottom = (parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)]) / lfoRange;
+    lfo1.set({min: lfoBottom, max: lfoTop});
 }
 
 function toggleRandomSpeed() {
@@ -118,10 +143,7 @@ function toggleRandomPitch() {
 }
 
 function setRhythm() {
-    Tone.Transport.clear(clock);
-    clock = Tone.Transport.scheduleRepeat((time) => {
-        testSynth.start(time).stop(time + 0.05);
-    }, rhythmMenu.value);
+    updateSettings(); 
     //console.log("set rhythmic value");
 }
 
@@ -129,35 +151,34 @@ function setFilterCutoff() {
     // Map a cutoff slider value of 1-14.3 to a range of 150 to 
     // 20000 Hertz using exponential scaling. 20000 Hz is the highest 
     // most humans can hear, and 2^14.3 equals approximately 20000.
+    // We use exponential scaling to make it so that our ears percieve
+    // an even slide across the frequency range.
     filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
     console.log(filter.frequency.value);
 }
 
 function setAMFreq() {
     testSynth.set({harmonicity: amSlider.value});
-    console.log("set AM frequency");
+    // console.log("set AM frequency");
 }
 
 function setLfoRate(){
     lfo1.set({frequency: Math.log2(lfoRateSlider.value) - 1})
-    console.log(`lfo frequency: ${lfo1.frequency.value}`);
+    // console.log(`lfo frequency: ${lfo1.frequency.value}`);
 }
 
 function setLfoRange(){
     lfoRange = lfoRangeSlider.value;
-    lfo1.set({max: lfoRange + lfo1.min})
-    console.log("lfo1 max: " + lfo1.max)
-    console.log("lfo1 min: " + lfo1.min)
-}
-
-function setLfoOffset(){
-    lfo1.set({min: lfoOffsetSlider.value})  
+    setLfo();
+    // console.log("lfo1 max: " + lfo1.max)
+    // console.log("lfo1 min: " + lfo1.min)
 }
 
 function closeModal() {
     let modal = document.getElementById("popup");
-    console.log("modal:")
+    /* console.log("modal:")
     console.log(modal)
-    console.log("closing modal");
+    console.log("closing modal"); */
     modal.style.display="none";
+    Tone.start();
 }
