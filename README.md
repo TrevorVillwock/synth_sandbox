@@ -6,6 +6,5 @@ After the npm package `http-server` has been installed with `npm install -g http
 
 ## Current bugs
 
-There seems to be a slight misalignment between the beginnings of notes and pitch changes.
-
-After changing the value in the rhythm menu there's sometimes a delay before the scheduled event starts. You can see in the console messages though that the event is scheduled without a delay.
+There's a strange delay after checking either of the checkboxes or choosing a new rhythmic value. From the print statements you can see
+that the new s

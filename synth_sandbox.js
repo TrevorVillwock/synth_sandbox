@@ -81,7 +81,8 @@ function setPitch() {
 function updateSettings() {
     
     console.log("cancelling Transport");
-    Tone.Transport.cancel(0);
+    Tone.Transport.cancel(clock);
+    //Tone.Transport.stop();
     console.log("transport cancelled");
     console.log("setting new clock");
 
@@ -89,22 +90,22 @@ function updateSettings() {
 
     if (randomSpeed && randomPitch) {
         console.log("both");
-        clock = Tone.Transport.scheduleRepeat((time) => {
+        clock = Tone.Transport.scheduleRepeat(() => {
             setLfo();
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
             testSynth.start();
             testSynth.stop(noteLength);
             console.log("playing from randomSpeed & randomPitch");
-        }, rhythmMenu.value, now);
+        }, rhythmMenu.value, startTime=now);
     } else if (randomSpeed) {
-        clock = Tone.Transport.scheduleRepeat((time) => {
+        clock = Tone.Transport.scheduleRepeat(() => {
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
             testSynth.start();
             testSynth.stop(noteLength);
             console.log("playing from randomSpeed");
-        }, rhythmMenu.value, now);
+        }, rhythmMenu.value, startTime=now);
     } else if (randomPitch) {
-        clock = Tone.Transport.scheduleRepeat((time) => {
+        let clock = Tone.Transport.scheduleRepeat((time) => {
             /* let lfoTop = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] + lfoRange;
             let lfoBottom = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] - lfoRange;
             lfo1.set({min: lfoBottom, max: lfoTop}); */
@@ -112,14 +113,16 @@ function updateSettings() {
             testSynth.start();
             testSynth.stop(noteLength);
             console.log("playing from randomPitch");
-        }, rhythmMenu.value, now);
+        }, rhythmMenu.value, startTime=now);
     } else {
-        clock = Tone.Transport.scheduleRepeat((time) => {
+        let clock = Tone.Transport.scheduleRepeat(() => {
             testSynth.start();
             testSynth.stop(noteLength);
             console.log("playing normally");
-        }, rhythmMenu.value, now);
+        }, rhythmMenu.value, startTime=now);
     }
+
+    //Tone.Transport.start();
 
     console.log("new clock set");
 }
