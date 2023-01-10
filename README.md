@@ -6,5 +6,4 @@ After the npm package `http-server` has been installed with `npm install -g http
 
 ## Current bugs
 
-There's a strange delay after checking either of the checkboxes or choosing a new rhythmic value. From the print statements you can see
-that the new s
+"Hz" displays correctly after the number box in the first column bu in the second column it's on a new line

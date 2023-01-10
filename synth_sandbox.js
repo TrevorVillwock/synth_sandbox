@@ -1,31 +1,52 @@
 let volSlider;
 let pitchSlider;
 let cutoffSlider;
+let lfoFreqSlider;
+let lfoRangeSlider;
 let rhythmMenu;
+let pitchNumber;
+let filterNumber;
+let amNumber;
+let lfoRangeNumber;
+let lfoFreqNumber;
 
 window.onload = function () {
     volSlider = document.getElementById("volumeSlider");
     pitchSlider = document.getElementById("pitchSlider");
     cutoffSlider = document.getElementById("cutoffSlider");
     amSlider = document.getElementById("amSlider");
-    lfoRateSlider = document.getElementById("lfoRateSlider");
+    lfoFreqSlider = document.getElementById("lfoFreqSlider");
     lfoRangeSlider = document.getElementById("lfoRangeSlider");
-    lfoOffsetSlider = document.getElementById("lfoOffsetSlider");
     rhythmMenu = document.getElementById("notes");
+    pitchNumber = document.getElementById("pitchNumber");
+    filterNumber = document.getElementById("filterNumber");
+    amNumber = document.getElementById("amNumber");
+    lfoFreqNumber = document.getElementById("lfoFreqNumber");
+    lfoRangeNumber = document.getElementById("lfoRangeNumber");
 }
 
 // The first 3 octaves and first 8 pitches of the harmonic series starting on approximately G2 (98 Hz), 
 // an octave and a fourth below middle C 
 let notes = [100, 200, 300, 400, 500, 600, 700, 800];
-let noteLength = "+0.5";
+let noteLength = "+0.5"; // in seconds
 
+// These lines create the "signal chain" of 
+// Each effect 
 let vol = new Tone.Volume(-25).toDestination();
-let filter = new Tone.Filter(1500, "lowpass").connect(vol);
+const sawSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1);
 
-const testSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1).connect(filter);
+let filter = new Tone.Filter(1500, "lowpass");
+
+const delay = new Tone.FeedbackDelay("8n", 0.5);
+
+sawSynth.connect(filter);
+filter.connect(delay);
+filter.connect(vol);
+delay.connect(vol);
+
 const lfo1 = new Tone.LFO(0, 1, 2);
 let lfoRange = 1;
-lfo1.connect(testSynth.frequency);
+lfo1.connect(sawSynth.frequency);
 lfo1.start();
 
 // Boolean variable indicating whether randomness is turned on or off
@@ -36,9 +57,9 @@ let randomPitch = 0;
 Tone.Transport.bpm.value = 60;
 
 let clock = Tone.Transport.scheduleRepeat(() => {
-    //console.log("synth frequency: " + testSynth.frequency.value)
-    testSynth.start()
-    testSynth.stop(noteLength);
+    //console.log("synth frequency: " + sawSynth.frequency.value)
+    sawSynth.start()
+    sawSynth.stop(noteLength);
 }, "4n");
 
 console.log(`clock: ${clock}`);
@@ -73,64 +94,69 @@ function setVolume() {
 function setPitch() {
     //console.log("setting pitch with LFO");
     //console.log("slider value: " + pitchSlider.value);
+
     let lfoTop = parseInt(pitchSlider.value) * lfoRange;
     let lfoBottom = parseInt(pitchSlider.value) / lfoRange;
     lfo1.set({max: lfoTop, min: lfoBottom});
+    pitchNumber.value = pitchSlider.value;
 }
 
 function updateSettings() {
     
     console.log("cancelling Transport");
     Tone.Transport.cancel(clock);
-    //Tone.Transport.stop();
     console.log("transport cancelled");
     console.log("setting new clock");
-
-    let now = Tone.now()
 
     if (randomSpeed && randomPitch) {
         console.log("both");
         clock = Tone.Transport.scheduleRepeat(() => {
-            setLfo();
+            setLfoRange();
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
-            testSynth.start();
-            testSynth.stop(noteLength);
+            sawSynth.start();
+            sawSynth.stop(noteLength);
             console.log("playing from randomSpeed & randomPitch");
-        }, rhythmMenu.value, startTime=now);
+        }, rhythmMenu.value, "0s");
     } else if (randomSpeed) {
         clock = Tone.Transport.scheduleRepeat(() => {
             Tone.Transport.bpm.value = 40 + Math.random() * 360;
-            testSynth.start();
-            testSynth.stop(noteLength);
+            sawSynth.start();
+            sawSynth.stop(noteLength);
             console.log("playing from randomSpeed");
-        }, rhythmMenu.value, startTime=now);
+        }, rhythmMenu.value, "0s");
     } else if (randomPitch) {
-        let clock = Tone.Transport.scheduleRepeat((time) => {
-            /* let lfoTop = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] + lfoRange;
-            let lfoBottom = parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)] - lfoRange;
-            lfo1.set({min: lfoBottom, max: lfoTop}); */
-            setLfo();
-            testSynth.start();
-            testSynth.stop(noteLength);
+        clock = Tone.Transport.scheduleRepeat(() => {
+            setLfoRange();
+            sawSynth.start();
+            sawSynth.stop(noteLength);
             console.log("playing from randomPitch");
-        }, rhythmMenu.value, startTime=now);
+        }, rhythmMenu.value, "0s");
     } else {
-        let clock = Tone.Transport.scheduleRepeat(() => {
-            testSynth.start();
-            testSynth.stop(noteLength);
+        clock = Tone.Transport.scheduleRepeat(() => {
+            sawSynth.start();
+            sawSynth.stop(noteLength);
             console.log("playing normally");
-        }, rhythmMenu.value, startTime=now);
+        }, rhythmMenu.value, "0s");
     }
-
-    //Tone.Transport.start();
 
     console.log("new clock set");
 }
 
-function setLfo() {
-    let lfoTop = (parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)]) * lfoRange;
-    let lfoBottom = (parseInt(pitchSlider.value) + notes[Math.floor(Math.random() * notes.length)]) / lfoRange;
+function setLfoRange() {
+    lfoRange = lfoRangeSlider.value;
+    let note = notes[Math.floor(Math.random() * notes.length)]
+    let lfoTop = (parseInt(pitchSlider.value) + note) * lfoRange;
+    let lfoBottom = (parseInt(pitchSlider.value) + note) / lfoRange;
     lfo1.set({min: lfoBottom, max: lfoTop});
+    console.log("lfo top: " + lfoTop);
+    console.log("lfo bottom: " + lfoBottom);
+    lfoRangeNumber.value = lfoTop - lfoBottom;
+}
+
+function setLfoFreq() {
+    lfo1.set({frequency: Math.log2(lfoFreqSlider.value) - 1});
+    lfoFreqNumber.value = Math.log2(lfoFreqSlider.value) - 1;
+    // console.log(`lfo frequency: ${lfo1.frequency.value}`);
 }
 
 function toggleRandomSpeed() {
@@ -157,24 +183,14 @@ function setFilterCutoff() {
     // We use exponential scaling to make it so that our ears percieve
     // an even slide across the frequency range.
     filter.frequency.value = 150 + Math.pow(2, cutoffSlider.value);
-    console.log(filter.frequency.value);
+    filterNumber.value = filter.frequency.value;
+    // console.log(filter.frequency.value);
 }
 
 function setAMFreq() {
-    testSynth.set({harmonicity: amSlider.value});
+    sawSynth.set({harmonicity: amSlider.value});
+    amNumber.value = amSlider.value;
     // console.log("set AM frequency");
-}
-
-function setLfoRate(){
-    lfo1.set({frequency: Math.log2(lfoRateSlider.value) - 1})
-    // console.log(`lfo frequency: ${lfo1.frequency.value}`);
-}
-
-function setLfoRange(){
-    lfoRange = lfoRangeSlider.value;
-    setLfo();
-    // console.log("lfo1 max: " + lfo1.max)
-    // console.log("lfo1 min: " + lfo1.min)
 }
 
 function closeModal() {
