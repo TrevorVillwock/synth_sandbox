@@ -1,4 +1,4 @@
-let volSlider;
+let mainVolSlider;
 let pitchSlider;
 let cutoffSlider;
 let lfoFreqSlider;
@@ -9,9 +9,14 @@ let filterNumber;
 let amNumber;
 let lfoRangeNumber;
 let lfoFreqNumber;
+let delayTimeSlider;
+let delayTimeNumber;
+let delayFeedbackSlider;
+let delayFeedbackNumber;
+let delayVolSlider;
 
 window.onload = function () {
-    volSlider = document.getElementById("volumeSlider");
+    mainVolSlider = document.getElementById("mainVolumeSlider");
     pitchSlider = document.getElementById("pitchSlider");
     cutoffSlider = document.getElementById("cutoffSlider");
     amSlider = document.getElementById("amSlider");
@@ -23,6 +28,11 @@ window.onload = function () {
     amNumber = document.getElementById("amNumber");
     lfoFreqNumber = document.getElementById("lfoFreqNumber");
     lfoRangeNumber = document.getElementById("lfoRangeNumber");
+    delayTimeSlider = document.getElementById("delayTimeSlider");
+    delayTimeNumber = document.getElementById("delayTimeNumber");
+    delayFeedbackSlider = document.getElementById("delayFeedbackSlider");
+    delayFeedbackNumber = document.getElementById("delayFeedbackNumber");
+    delayVolSlider = document.getElementById("delayVolumeSlider");
 }
 
 // The first 3 octaves and first 8 pitches of the harmonic series starting on approximately G2 (98 Hz), 
@@ -30,19 +40,20 @@ window.onload = function () {
 let notes = [100, 200, 300, 400, 500, 600, 700, 800];
 let noteLength = "+0.5"; // in seconds
 
-// These lines create the "signal chain" of 
-// Each effect 
-let vol = new Tone.Volume(-25).toDestination();
+// toDestination() connects the sound produced to your computer headphones/speakers
+const mainVol = new Tone.Volume(-25).toDestination();
 const sawSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1);
-
-let filter = new Tone.Filter(1500, "lowpass");
-
+const filter = new Tone.Filter(1500, "lowpass");
 const delay = new Tone.FeedbackDelay("8n", 0.5);
+const delayVol = new Tone.Volume(-25);
 
+// These lines create the "signal chain" of effects, which we can visualize like this:
+// synth ---> filter ---> delay --->
 sawSynth.connect(filter);
 filter.connect(delay);
-filter.connect(vol);
-delay.connect(vol);
+filter.connect(mainVol);
+delay.connect(delayVol);
+delayVol.connect(mainVol);
 
 const lfo1 = new Tone.LFO(0, 1, 2);
 let lfoRange = 1;
@@ -75,19 +86,19 @@ function stop() {
     Tone.Transport.stop();
 }
 
-function setVolume() {
+function setMainVolume() {
     
     /************************************************************
     The html slider gives us values 0-200, which we map
     to be between -100 and 0 dB because that's what the
-    Tone.js Volume object expects.
+    Tone.js mainVolume object expects.
     For an explanation of how decibels work check out this page:
     https://ehomerecordingstudio.com/decibels/
     *************************************************************/ 
   
     // log2(0) is undefined and will throw an error since there's no power of 2 that equals zero.
-    if (volSlider.value != 0) {
-        vol.volume.value = -1 * (100 - 13 * Math.log2(volSlider.value));
+    if (mainVolSlider.value != 0) {
+        mainVol.volume.value = -1 * (100 - 13 * Math.log2(mainVolSlider.value));
     }
 }
 
@@ -191,6 +202,31 @@ function setAMFreq() {
     sawSynth.set({harmonicity: amSlider.value});
     amNumber.value = amSlider.value;
     // console.log("set AM frequency");
+}
+
+function setDelayTime() {
+    delay.set({delayTime: delayTimeSlider.value});
+    delayTimeNumber.value = delayTimeSlider.value;
+}
+
+function setDelayFeedback() {
+    delay.set({feedback: delayFeedbackSlider.value});
+    delayFeedbackNumber.value = delayFeedbackSlider.value;
+}
+
+function setDelayVolume() {
+    /************************************************************
+    The html slider gives us values 0-200, which we map
+    to be between -100 and 0 dB because that's what the
+    Tone.js mainVolume object expects.
+    For an explanation of how decibels work check out this page:
+    https://ehomerecordingstudio.com/decibels/
+    *************************************************************/ 
+  
+    // The "dry" signal is the signal without effects, and the "wet" signal is the signal with effects
+    // 0.0 is a totally dry signal, and 1.0 is totally wet signal
+    // For the delay, 1.0 means that the first echo will be the exact same volume as the initial sound. 
+    delay.set({wet: delayVolumeSlider.value});
 }
 
 function closeModal() {
