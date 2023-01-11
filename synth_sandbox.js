@@ -45,15 +45,13 @@ const mainVol = new Tone.Volume(-25).toDestination();
 const sawSynth = new Tone.AMOscillator(100, "sawtooth64", "sine", 0.1);
 const filter = new Tone.Filter(1500, "lowpass");
 const delay = new Tone.FeedbackDelay("8n", 0.5);
-const delayVol = new Tone.Volume(-25);
 
 // These lines create the "signal chain" of effects, which we can visualize like this:
 // synth ---> filter ---> delay --->
 sawSynth.connect(filter);
 filter.connect(delay);
 filter.connect(mainVol);
-delay.connect(delayVol);
-delayVol.connect(mainVol);
+delay.connect(mainVol);
 
 const lfo1 = new Tone.LFO(0, 1, 2);
 let lfoRange = 1;
@@ -161,7 +159,7 @@ function setLfoRange() {
     lfo1.set({min: lfoBottom, max: lfoTop});
     console.log("lfo top: " + lfoTop);
     console.log("lfo bottom: " + lfoBottom);
-    lfoRangeNumber.value = lfoTop - lfoBottom;
+    lfoRangeNumber.value = lfoRangeSlider.value;
 }
 
 function setLfoFreq() {
